@@ -7,6 +7,8 @@
  */
 package ai.philterd.phinder;
 
+import ai.philterd.phileas.model.configuration.PhileasConfiguration;
+import ai.philterd.phileas.services.PhileasFilterService;
 import ai.philterd.phinder.ext.PhinderParametersExtBuilder;
 import org.opensearch.action.support.ActionFilter;
 import org.opensearch.client.Client;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.function.Supplier;
 
 import static java.util.Collections.singletonList;
@@ -76,7 +79,19 @@ public class PhinderPlugin extends Plugin implements ActionPlugin, SearchPlugin 
 
     @Override
     public List<ActionFilter> getActionFilters() {
-        return singletonList(new PhinderActionFilter());
+
+        try {
+
+            final Properties properties = new Properties();
+            final PhileasConfiguration phileasConfiguration = new PhileasConfiguration(properties);
+            final PhileasFilterService phileasFilterService = new PhileasFilterService(phileasConfiguration);
+
+            return singletonList(new PhinderActionFilter(phileasFilterService));
+
+        } catch (Exception ex) {
+            throw new RuntimeException("Unable to initialize Phileas.", ex);
+        }
+
     }
 
 

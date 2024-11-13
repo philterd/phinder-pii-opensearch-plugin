@@ -7,6 +7,9 @@
  */
 package ai.philterd.phinder;
 
+import ai.philterd.phileas.model.enums.MimeType;
+import ai.philterd.phileas.model.responses.FilterResponse;
+import ai.philterd.phileas.services.PhileasFilterService;
 import ai.philterd.phinder.ext.PhinderParameters;
 import org.opensearch.action.ActionRequest;
 import org.opensearch.action.search.SearchRequest;
@@ -18,11 +21,15 @@ import org.opensearch.core.action.ActionResponse;
 import org.opensearch.search.SearchHit;
 import org.opensearch.tasks.Task;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class PhinderActionFilter implements ActionFilter {
+
+    private final PhileasFilterService phileasFilterService;
+
+    public PhinderActionFilter(final PhileasFilterService phileasFilterService) {
+        this.phileasFilterService = phileasFilterService;
+    }
 
     @Override
     public int order() {
@@ -49,7 +56,15 @@ public class PhinderActionFilter implements ActionFilter {
             public void onResponse(Response response) {
 
                 if(request instanceof SearchRequest) {
-                    response = (Response) handleSearchRequest((SearchRequest) request, response);
+
+                    try {
+
+                        response = (Response) handleSearchRequest((SearchRequest) request, response);
+
+                    } catch (Exception ex) {
+                        throw new RuntimeException("Unable to apply Philes to search hit.", ex);
+                    }
+
                 }
 
                 listener.onResponse(response);
@@ -65,7 +80,7 @@ public class PhinderActionFilter implements ActionFilter {
 
     }
 
-    private ActionResponse handleSearchRequest(final SearchRequest searchRequest, ActionResponse response) {
+    private ActionResponse handleSearchRequest(final SearchRequest searchRequest, ActionResponse response) throws Exception {
 
         if (response instanceof SearchResponse) {
 
@@ -74,10 +89,14 @@ public class PhinderActionFilter implements ActionFilter {
             if (phinderParameters != null) {
 
                 final String policyName = phinderParameters.getPolicyName();
+                final String context = phinderParameters.getContext();
+                final String fieldName = phinderParameters.getFieldName();
 
                 for (final SearchHit hit : ((SearchResponse) response).getHits()) {
 
-                    // TODO: Look for PII by applying the policy.
+                    // Look for PII by applying the policy.
+                    final String input = hit.field(fieldName).getValue().toString();
+                    final FilterResponse filterResponse = phileasFilterService.filter(List.of(policyName), context, hit.getId(), input, MimeType.TEXT_PLAIN);
 
                 }
 

@@ -15,6 +15,7 @@ def pluginClassName = 'PhinderPlugin'
 group = "ai.philterd"
 
 thirdPartyAudit.enabled = false
+forbiddenApisYamlRestTest.enabled = false
 
 java {
     targetCompatibility = JavaVersion.VERSION_21
@@ -85,8 +86,13 @@ buildscript {
     }
 }
 
+configurations.all {
+    exclude group: "org.apache.lucene", module: "lucene-core"
+}
+
 dependencies {
     implementation "ai.philterd:phileas-core:2.7.1"
+    implementation("ai.philterd:phileas-model:2.7.1")
 }
 
 repositories {

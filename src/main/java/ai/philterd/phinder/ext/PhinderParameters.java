@@ -29,10 +29,14 @@ public class PhinderParameters implements Writeable, ToXContentObject {
 
     private static final ObjectParser<PhinderParameters, Void> PARSER;
     private static final ParseField POLICY_NAME = new ParseField("policy");
+    private static final ParseField CONTEXT = new ParseField("context");
+    private static final ParseField FIELD_NAME = new ParseField("field");
 
     static {
         PARSER = new ObjectParser<>(PhinderParametersExtBuilder.PHINDER_PARAMETERS_NAME, PhinderParameters::new);
         PARSER.declareString(PhinderParameters::setPolicyName, POLICY_NAME);
+        PARSER.declareString(PhinderParameters::setPolicyName, CONTEXT);
+        PARSER.declareString(PhinderParameters::setPolicyName, FIELD_NAME);
     }
 
     /**
@@ -64,6 +68,8 @@ public class PhinderParameters implements Writeable, ToXContentObject {
     }
 
     private String policyName;
+    private String context;
+    private String fieldName;
 
     /**
      * Creates a new instance.
@@ -75,9 +81,10 @@ public class PhinderParameters implements Writeable, ToXContentObject {
      * @param input The {@link StreamInput} to read parameters from.
      * @throws IOException Thrown if the parameters cannot be read.
      */
-    @SuppressWarnings("unchecked")
     public PhinderParameters(StreamInput input) throws IOException {
         this.policyName = input.readString();
+        this.context = input.readString();
+        this.fieldName = input.readString();
     }
 
     /**
@@ -133,6 +140,22 @@ public class PhinderParameters implements Writeable, ToXContentObject {
 
     public void setPolicyName(String policyName) {
         this.policyName = policyName;
+    }
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
 }
