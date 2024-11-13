@@ -1,2 +1,1 @@
-OpenSearch (https://opensearch.org/)
-Copyright OpenSearch Contributors
+Copyright 2024 Philterd, LLC.

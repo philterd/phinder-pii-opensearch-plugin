@@ -7,12 +7,12 @@ apply plugin: 'opensearch.opensearchplugin'
 apply plugin: 'opensearch.yaml-rest-test'
 apply plugin: 'opensearch.pluginzip'
 
-def pluginName = 'rename'
-def pluginDescription = 'Custom plugin'
-def packagePath = 'org.example'
-def pathToPlugin = 'path.to.plugin'
-def pluginClassName = 'RenamePlugin'
-group = "RenameGroup"
+def pluginName = 'phinder'
+def pluginDescription = 'Phinder'
+def packagePath = 'ai.philterd'
+def pathToPlugin = 'phinder'
+def pluginClassName = 'PhinderPlugin'
+group = "ai.philterd"
 
 java {
     targetCompatibility = JavaVersion.VERSION_21
