@@ -16,6 +16,7 @@ group = "ai.philterd"
 
 thirdPartyAudit.enabled = false
 forbiddenApisYamlRestTest.enabled = false
+//jarHell.enabled = false
 
 java {
     targetCompatibility = JavaVersion.VERSION_21
@@ -71,7 +72,7 @@ validateNebulaPom.enabled = false
 
 buildscript {
     ext {
-        opensearch_version = System.getProperty("opensearch.version", "3.0.0-SNAPSHOT")
+        opensearch_version = System.getProperty("opensearch.version", "2.18.0")
     }
 
     repositories {
@@ -87,12 +88,20 @@ buildscript {
 }
 
 configurations.all {
-    exclude group: "org.apache.lucene", module: "lucene-core"
+    exclude group: "org.apache.logging.log4j"
 }
 
 dependencies {
-    implementation "ai.philterd:phileas-core:2.7.1"
-    implementation("ai.philterd:phileas-model:2.7.1")
+    implementation("ai.philterd:phileas-core:2.9.0-SNAPSHOT")
+    implementation("ai.philterd:phileas-model:2.9.0-SNAPSHOT")  {
+        exclude group: "org.apache.lucene", module: "lucene-core"
+        exclude group: "org.apache.lucene", module: "lucene-queryparser"
+    }
+
+    testImplementation("ai.philterd:phileas-model:2.9.0-SNAPSHOT") {
+        exclude group: "org.apache.lucene", module: "lucene-core"
+        exclude group: "org.apache.lucene", module: "lucene-queryparser"
+    }
 }
 
 repositories {
