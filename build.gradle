@@ -93,12 +93,12 @@ configurations.all {
 
 dependencies {
     implementation("ai.philterd:phileas-core:2.9.0-SNAPSHOT")
-    implementation("ai.philterd:phileas-model:2.9.0-SNAPSHOT")  {
+    implementation("ai.philterd:phileas-model:2.9.1")  {
         exclude group: "org.apache.lucene", module: "lucene-core"
         exclude group: "org.apache.lucene", module: "lucene-queryparser"
     }
 
-    testImplementation("ai.philterd:phileas-model:2.9.0-SNAPSHOT") {
+    testImplementation("ai.philterd:phileas-model:2.9.1") {
         exclude group: "org.apache.lucene", module: "lucene-core"
         exclude group: "org.apache.lucene", module: "lucene-queryparser"
     }
