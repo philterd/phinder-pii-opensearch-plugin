@@ -19,9 +19,9 @@ import java.io.IOException;
 public class PhinderSearchResponse extends SearchResponse {
 
     private static final String EXT_SECTION_NAME = "ext";
-    private static final String Phinder_QUERY_ID_FIELD_NAME = "query_id";
+    private static final String PHINDER_POLICY_NAME = "policy";
 
-    private final String queryId;
+    private final String policy;
 
     /**
      * Creates a new Phinder search response.
@@ -34,7 +34,7 @@ public class PhinderSearchResponse extends SearchResponse {
      * @param tookInMillis     The time took in milliseconds.
      * @param shardFailures    An array of {@link ShardSearchFailure}.
      * @param clusters         The {@link Clusters}.
-     * @param queryId          The query ID.
+     * @param policy       The name of the policy.
      */
     public PhinderSearchResponse(
             SearchResponseSections internalResponse,
@@ -45,10 +45,10 @@ public class PhinderSearchResponse extends SearchResponse {
             long tookInMillis,
             ShardSearchFailure[] shardFailures,
             SearchResponse.Clusters clusters,
-            String queryId
+            String policy
     ) {
         super(internalResponse, scrollId, totalShards, successfulShards, skippedShards, tookInMillis, shardFailures, clusters);
-        this.queryId = queryId;
+        this.policy = policy;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class PhinderSearchResponse extends SearchResponse {
 
         builder.startObject(EXT_SECTION_NAME);
         builder.startObject(PhinderParametersExtBuilder.PHINDER_PARAMETERS_NAME);
-        builder.field(Phinder_QUERY_ID_FIELD_NAME, this.queryId);
+        builder.field(PHINDER_POLICY_NAME, this.policy);
         builder.endObject();
         builder.endObject();
         builder.endObject();

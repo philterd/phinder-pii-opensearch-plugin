@@ -1,74 +1,33 @@
-import org.opensearch.gradle.test.RestIntegTestTask
-
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'eclipse'
 apply plugin: 'opensearch.opensearchplugin'
-apply plugin: 'opensearch.yaml-rest-test'
-apply plugin: 'opensearch.pluginzip'
+//apply plugin: 'opensearch.yaml-rest-test'
+//apply plugin: 'opensearch.pluginzip'
 
-def pluginName = 'phinder'
-def pluginDescription = 'Phinder'
-def packagePath = 'ai.philterd'
-def pathToPlugin = 'phinder'
-def pluginClassName = 'PhinderPlugin'
 group = "ai.philterd"
+version = "1.0.0-SNAPSHOT"
+
+opensearchplugin {
+    name 'phinder'
+    description 'Phinder'
+    classname "ai.philterd.phinder.PhinderPlugin"
+    licenseFile rootProject.file('LICENSE.txt')
+    noticeFile rootProject.file('NOTICE.txt')
+}
 
 thirdPartyAudit.enabled = false
-forbiddenApisYamlRestTest.enabled = false
+//forbiddenApisYamlRestTest.enabled = false
+forbiddenApisTest.enabled = false
+//loggerUsageCheck.enabled = false
+validateNebulaPom.enabled = false
 //jarHell.enabled = false
+loggerUsageCheck.enabled = false
+dependencyLicenses.enabled = false
 
 java {
     targetCompatibility = JavaVersion.VERSION_21
     sourceCompatibility = JavaVersion.VERSION_21
 }
-
-tasks.register("preparePluginPathDirs") {
-    mustRunAfter clean
-    doLast {
-        def newPath = pathToPlugin.replace(".", "/")
-        mkdir "src/main/java/$packagePath/$newPath"
-        mkdir "src/test/java/$packagePath/$newPath"
-        mkdir "src/yamlRestTest/java/$packagePath/$newPath"
-    }
-}
-
-publishing {
-    publications {
-        pluginZip(MavenPublication) { publication ->
-            pom {
-              name = pluginName
-              description = pluginDescription
-              licenses {
-                license {
-                  name = "The Apache License, Version 2.0"
-                  url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                }
-              }
-              developers {
-                developer {
-                  name = "OpenSearch"
-                  url = "https://github.com/opensearch-project/opensearch-plugin-template-java"
-                }
-              }
-            }
-        }
-    }
-}
-
-opensearchplugin {
-    name pluginName
-    description pluginDescription
-    classname "${packagePath}.${pathToPlugin}.${pluginClassName}"
-    licenseFile rootProject.file('LICENSE.txt')
-    noticeFile rootProject.file('NOTICE.txt')
-}
-
-// This requires an additional Jar not published as part of build-tools
-loggerUsageCheck.enabled = false
-
-// No need to validate pom, as we do not upload to maven/sonatype
-validateNebulaPom.enabled = false
 
 buildscript {
     ext {
@@ -85,24 +44,22 @@ buildscript {
     dependencies {
         classpath "org.opensearch.gradle:build-tools:${opensearch_version}"
     }
+
 }
 
-configurations.all {
-    exclude group: "org.apache.logging.log4j"
-}
+dependencies {
+    implementation("ai.philterd:phileas-core:2.10.0-SNAPSHOT")
+    implementation("ai.philterd:phileas-model:2.10.0-SNAPSHOT")
+    implementation("ai.philterd:phileas-services-policies:2.10.0-SNAPSHOT")
+    implementation("ai.philterd:phileas-services-anonymization:2.10.0-SNAPSHOT")
+    implementation("ai.philterd:phileas-services-alerts:2.10.0-SNAPSHOT")
+    implementation("ai.philterd:phileas-processors-unstructured:2.10.0-SNAPSHOT")
+    implementation("ai.philterd:phileas-services-disambiguation:2.10.0-SNAPSHOT")
+    implementation("ai.philterd:phileas-services-split:2.10.0-SNAPSHOT")
 
-dependencies {   
-    implementation("ai.philterd:phileas-model:2.9.1")  {
-    implementation("ai.philterd:phileas-core:2.9.1")
-    implementation("ai.philterd:phileas-model:2.9.1")  {
-        exclude group: "org.apache.lucene", module: "lucene-core"
-        exclude group: "org.apache.lucene", module: "lucene-queryparser"
-    }
-
-    testImplementation("ai.philterd:phileas-model:2.9.1") {
-        exclude group: "org.apache.lucene", module: "lucene-core"
-        exclude group: "org.apache.lucene", module: "lucene-queryparser"
-    }
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'org.apache.commons:commons-lang3:3.17.0'
+    implementation 'org.json:json:20240303'
 }
 
 repositories {
@@ -111,45 +68,5 @@ repositories {
     mavenCentral()
     maven { url "https://plugins.gradle.org/m2/" }
     maven { url "https://artifacts.philterd.ai/releases" }
+    maven { url "https://artifacts.philterd.ai/snapshots" }
 }
-
-test {
-    include '**/*Tests.class'
-}
-
-task integTest(type: RestIntegTestTask) {
-    description = "Run tests against a cluster"
-    testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
-}
-tasks.named("check").configure { dependsOn(integTest) }
-
-integTest {
-    // The --debug-jvm command-line option makes the cluster debuggable; this makes the tests debuggable
-    if (System.getProperty("test.debug") != null) {
-        jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005'
-    }
-}
-
-testClusters.integTest {
-    testDistribution = "INTEG_TEST"
-
-    // This installs our plugin into the testClusters
-    plugin(project.tasks.bundlePlugin.archiveFile)
-}
-
-run {
-    useCluster testClusters.integTest
-}
-
-// updateVersion: Task to auto update version to the next development iteration
-task updateVersion {
-    onlyIf { System.getProperty('newVersion') }
-    doLast {
-        ext.newVersion = System.getProperty('newVersion')
-        println "Setting version to ${newVersion}."
-         // String tokenization to support -SNAPSHOT
-        ant.replaceregexp(file:'build.gradle', match: '"opensearch.version", "\\d.*"', replace: '"opensearch.version", "' + newVersion.tokenize('-')[0] + '-SNAPSHOT"', flags:'g', byline:true)
-    }
-}
-

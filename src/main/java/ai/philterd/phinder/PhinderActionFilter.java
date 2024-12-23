@@ -88,7 +88,7 @@ public class PhinderActionFilter implements ActionFilter {
 
             if (phinderParameters != null) {
 
-                final String policyName = phinderParameters.getPolicyName();
+                final String policy = phinderParameters.getPolicy();
                 final String context = phinderParameters.getContext();
                 final String fieldName = phinderParameters.getFieldName();
 
@@ -96,7 +96,7 @@ public class PhinderActionFilter implements ActionFilter {
 
                     // Look for PII by applying the policy.
                     final String input = hit.field(fieldName).getValue().toString();
-                    final FilterResponse filterResponse = phileasFilterService.filter(List.of(policyName), context, hit.getId(), input, MimeType.TEXT_PLAIN);
+                    final FilterResponse filterResponse = phileasFilterService.filter(List.of(policy), context, hit.getId(), input, MimeType.TEXT_PLAIN);
 
                 }
 
@@ -111,7 +111,7 @@ public class PhinderActionFilter implements ActionFilter {
                         searchResponse.getTook().millis(),
                         searchResponse.getShardFailures(),
                         searchResponse.getClusters(),
-                        policyName  // TODO: Include the results of the PII scan.
+                        policy  // TODO: Include the results of the PII scan.
                 );
 
             }

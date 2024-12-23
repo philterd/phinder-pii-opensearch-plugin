@@ -9,6 +9,10 @@ package ai.philterd.phinder;
 
 import org.opensearch.test.OpenSearchTestCase;
 
-public class PhinderTests extends OpenSearchTestCase {
-    // Add unit tests for your plugin
+public class SampleTests extends OpenSearchTestCase {
+
+    public void testSample() {
+
+    }
+
 }

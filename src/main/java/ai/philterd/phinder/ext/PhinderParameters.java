@@ -34,9 +34,9 @@ public class PhinderParameters implements Writeable, ToXContentObject {
 
     static {
         PARSER = new ObjectParser<>(PhinderParametersExtBuilder.PHINDER_PARAMETERS_NAME, PhinderParameters::new);
-        PARSER.declareString(PhinderParameters::setPolicyName, POLICY_NAME);
-        PARSER.declareString(PhinderParameters::setPolicyName, CONTEXT);
-        PARSER.declareString(PhinderParameters::setPolicyName, FIELD_NAME);
+        PARSER.declareString(PhinderParameters::setPolicy, POLICY_NAME);
+        PARSER.declareString(PhinderParameters::setPolicy, CONTEXT);
+        PARSER.declareString(PhinderParameters::setPolicy, FIELD_NAME);
     }
 
     /**
@@ -67,7 +67,7 @@ public class PhinderParameters implements Writeable, ToXContentObject {
 
     }
 
-    private String policyName;
+    private String policy;
     private String context;
     private String fieldName;
 
@@ -82,28 +82,28 @@ public class PhinderParameters implements Writeable, ToXContentObject {
      * @throws IOException Thrown if the parameters cannot be read.
      */
     public PhinderParameters(StreamInput input) throws IOException {
-        this.policyName = input.readString();
+        this.policy = input.readString();
         this.context = input.readString();
         this.fieldName = input.readString();
     }
 
     /**
      * Creates a new instance.
-     * @param policyName The name of the policy to apply.
+     * @param policy The name of the policy to apply.
      */
-    public PhinderParameters(String policyName) {
-        this.policyName = policyName;
+    public PhinderParameters(String policy) {
+        this.policy = policy;
     }
 
     @Override
     public XContentBuilder toXContent(XContentBuilder xContentBuilder, Params params) throws IOException {
         return xContentBuilder
-                .field(POLICY_NAME.getPreferredName(), this.policyName);
+                .field(POLICY_NAME.getPreferredName(), this.policy);
     }
 
     @Override
     public void writeTo(StreamOutput out) throws IOException {
-        out.writeString(policyName);
+        out.writeString(policy);
     }
 
     /**
@@ -126,20 +126,20 @@ public class PhinderParameters implements Writeable, ToXContentObject {
         }
 
         final PhinderParameters other = (PhinderParameters) o;
-        return Objects.equals(this.policyName, other.getPolicyName());
+        return Objects.equals(this.policy, other.getPolicy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getClass(), this.policyName);
+        return Objects.hash(this.getClass(), this.policy);
     }
 
-    public String getPolicyName() {
-        return policyName;
+    public String getPolicy() {
+        return policy;
     }
 
-    public void setPolicyName(String policyName) {
-        this.policyName = policyName;
+    public void setPolicy(String policy) {
+        this.policy = policy;
     }
 
     public String getContext() {
