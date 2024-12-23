@@ -35,8 +35,8 @@ public class PhinderParameters implements Writeable, ToXContentObject {
     static {
         PARSER = new ObjectParser<>(PhinderParametersExtBuilder.PHINDER_PARAMETERS_NAME, PhinderParameters::new);
         PARSER.declareString(PhinderParameters::setPolicy, POLICY_NAME);
-        PARSER.declareString(PhinderParameters::setPolicy, CONTEXT);
-        PARSER.declareString(PhinderParameters::setPolicy, FIELD_NAME);
+        PARSER.declareString(PhinderParameters::setContext, CONTEXT);
+        PARSER.declareString(PhinderParameters::setFieldName, FIELD_NAME);
     }
 
     /**
@@ -135,6 +135,9 @@ public class PhinderParameters implements Writeable, ToXContentObject {
     }
 
     public String getPolicy() {
+        if(policy == null) {
+            return "default";
+        }
         return policy;
     }
 

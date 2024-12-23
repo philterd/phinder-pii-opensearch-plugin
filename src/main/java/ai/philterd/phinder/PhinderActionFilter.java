@@ -11,6 +11,8 @@ import ai.philterd.phileas.model.enums.MimeType;
 import ai.philterd.phileas.model.responses.FilterResponse;
 import ai.philterd.phileas.services.PhileasFilterService;
 import ai.philterd.phinder.ext.PhinderParameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.opensearch.action.ActionRequest;
 import org.opensearch.action.search.SearchRequest;
 import org.opensearch.action.search.SearchResponse;
@@ -24,6 +26,8 @@ import org.opensearch.tasks.Task;
 import java.util.List;
 
 public class PhinderActionFilter implements ActionFilter {
+
+    private static final Logger LOGGER = LogManager.getLogger(PhinderActionFilter.class);
 
     private final PhileasFilterService phileasFilterService;
 
@@ -92,11 +96,15 @@ public class PhinderActionFilter implements ActionFilter {
                 final String context = phinderParameters.getContext();
                 final String fieldName = phinderParameters.getFieldName();
 
+                LOGGER.info("policy = {}, context = {}, field = {}", policy, context, fieldName);
+
                 for (final SearchHit hit : ((SearchResponse) response).getHits()) {
 
                     // Look for PII by applying the policy.
-                    final String input = hit.field(fieldName).getValue().toString();
+                    final String input = hit.getSourceAsMap().get(fieldName).toString();
                     final FilterResponse filterResponse = phileasFilterService.filter(List.of(policy), context, hit.getId(), input, MimeType.TEXT_PLAIN);
+
+                    LOGGER.info("Filter response: {}", filterResponse.getFilteredText());
 
                 }
 
