@@ -55,7 +55,7 @@ dependencies {
     implementation("ai.philterd:phileas-services-alerts:2.10.0-SNAPSHOT")
     implementation("ai.philterd:phileas-processors-unstructured:2.10.0-SNAPSHOT")
     implementation("ai.philterd:phileas-services-disambiguation:2.10.0-SNAPSHOT")
-    implementation("ai.philterd:phileas-services-split:2.10.0-SNAPSHOT")
+    implementation("ai.philterd:phileas-services-split:2.11.0-SNAPSHOT")
 
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
