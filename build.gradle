@@ -1,8 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'opensearch.opensearchplugin'
-//apply plugin: 'opensearch.yaml-rest-test'
-//apply plugin: 'opensearch.pluginzip'
+apply plugin: 'opensearch.yaml-rest-test'
+apply plugin: 'opensearch.pluginzip'
 
 group = "ai.philterd"
 version = "1.0.0-SNAPSHOT"
@@ -10,17 +10,14 @@ version = "1.0.0-SNAPSHOT"
 opensearchplugin {
     name 'phinder'
     description 'Phinder'
-    classname "ai.philterd.phinder.PhinderPlugin"
+    classname "ai.philterd.PhinderPlugin"
     licenseFile rootProject.file('LICENSE.txt')
     noticeFile rootProject.file('NOTICE.txt')
 }
 
 thirdPartyAudit.enabled = false
-//forbiddenApisYamlRestTest.enabled = false
 forbiddenApisTest.enabled = false
-//loggerUsageCheck.enabled = false
 validateNebulaPom.enabled = false
-//jarHell.enabled = false
 loggerUsageCheck.enabled = false
 dependencyLicenses.enabled = false
 
