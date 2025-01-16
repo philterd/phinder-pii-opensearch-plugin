@@ -2,6 +2,14 @@
 
 This repository is a plugin for Amazon OpenSearch that redacts PII from search results. It uses the [phileas](https://github.com/philterd/phileas/) library for redaction.
 
+## Build
+
+To build the plugin:
+
+```
+./gradlew build
+```
+
 ## Usage
 
 To use the plugin, create an index and then index some documents:
