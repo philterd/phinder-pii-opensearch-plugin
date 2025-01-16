@@ -6,5 +6,5 @@ curl -s -X POST "http://localhost:9200/sample_index/_doc" -H 'Content-Type: appl
 {
   "name": "Another Example",
   "price": 19.99,
-  "description": "My email is jeff.zemerick@philterd.ai ok!"
+  "description": "My email is something@something.com ok!"
 }' | jq
