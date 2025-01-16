@@ -48,18 +48,22 @@ buildscript {
 }
 
 dependencies {
-    implementation("ai.philterd:phileas-core:2.10.0-SNAPSHOT")
-    implementation("ai.philterd:phileas-model:2.10.0-SNAPSHOT")
-    implementation("ai.philterd:phileas-services-policies:2.10.0-SNAPSHOT")
-    implementation("ai.philterd:phileas-services-anonymization:2.10.0-SNAPSHOT")
-    implementation("ai.philterd:phileas-services-alerts:2.10.0-SNAPSHOT")
-    implementation("ai.philterd:phileas-processors-unstructured:2.10.0-SNAPSHOT")
-    implementation("ai.philterd:phileas-services-disambiguation:2.10.0-SNAPSHOT")
-    implementation("ai.philterd:phileas-services-split:2.10.0-SNAPSHOT")
+    implementation("ai.philterd:phileas-core:2.10.0")
+    implementation("ai.philterd:phileas-model:2.10.0")
+    implementation("ai.philterd:phileas-services-policies:2.10.0")
+    implementation("ai.philterd:phileas-services-anonymization:2.10.0")
+    implementation("ai.philterd:phileas-services-alerts:2.10.0")
+    implementation("ai.philterd:phileas-processors-unstructured:2.10.0")
+    implementation("ai.philterd:phileas-services-disambiguation:2.10.0")
+    implementation("ai.philterd:phileas-services-split:2.10.0")
 
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
     implementation 'org.json:json:20250107'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.18.2'
+    implementation 'org.apache.commons:commons-collections4:4.4'
+
 }
 
 repositories {

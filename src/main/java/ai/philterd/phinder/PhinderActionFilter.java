@@ -1,16 +1,27 @@
 /*
- * SPDX-License-Identifier: Apache-2.0
+ *     Copyright 2025 Philterd, LLC @ https://www.philterd.ai
  *
- * The OpenSearch Contributors require contributions made to
- * this file be licensed under the Apache-2.0 license or a
- * compatible open source license.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *          http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package ai.philterd.phinder;
 
 import ai.philterd.phileas.model.enums.MimeType;
+import ai.philterd.phileas.model.policy.Policy;
 import ai.philterd.phileas.model.responses.FilterResponse;
 import ai.philterd.phileas.services.PhileasFilterService;
 import ai.philterd.phinder.ext.PhinderParameters;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.opensearch.action.ActionRequest;
@@ -20,10 +31,14 @@ import org.opensearch.action.support.ActionFilter;
 import org.opensearch.action.support.ActionFilterChain;
 import org.opensearch.core.action.ActionListener;
 import org.opensearch.core.action.ActionResponse;
+import org.opensearch.core.common.bytes.BytesArray;
 import org.opensearch.search.SearchHit;
 import org.opensearch.tasks.Task;
 
-import java.util.List;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PhinderActionFilter implements ActionFilter {
 
@@ -66,7 +81,7 @@ public class PhinderActionFilter implements ActionFilter {
                         response = (Response) handleSearchRequest((SearchRequest) request, response);
 
                     } catch (Exception ex) {
-                        throw new RuntimeException("Unable to apply Philes to search hit.", ex);
+                        throw new RuntimeException("Unable to apply Phileas to search hit.", ex);
                     }
 
                 }
@@ -84,7 +99,7 @@ public class PhinderActionFilter implements ActionFilter {
 
     }
 
-    private ActionResponse handleSearchRequest(final SearchRequest searchRequest, ActionResponse response) throws Exception {
+    private ActionResponse handleSearchRequest(final SearchRequest searchRequest, final ActionResponse response) throws Exception {
 
         if (response instanceof SearchResponse) {
 
@@ -92,35 +107,42 @@ public class PhinderActionFilter implements ActionFilter {
 
             if (phinderParameters != null) {
 
-                final String policy = phinderParameters.getPolicy();
+                final String policyJson = phinderParameters.getPolicy();
                 final String context = phinderParameters.getContext();
                 final String fieldName = phinderParameters.getFieldName();
 
-                LOGGER.info("policy = {}, context = {}, field = {}", policy, context, fieldName);
+                // LOGGER.info("policy = {}, context = {}, field = {}", policyJson, context, fieldName);
 
-                for (final SearchHit hit : ((SearchResponse) response).getHits()) {
+                final ObjectMapper objectMapper = new ObjectMapper();
 
-                    // Look for PII by applying the policy.
+                final Policy policy = AccessController.doPrivileged((PrivilegedAction<Policy>) () -> {
+                        try {
+                            return objectMapper.readValue(policyJson, Policy.class);
+                        } catch (JsonProcessingException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    });
+
+                for (final SearchHit hit : ((SearchResponse) response).getHits().getHits()) {
+
+                    // Look for PII by applying the policy to the selected field.
                     final String input = hit.getSourceAsMap().get(fieldName).toString();
-                    final FilterResponse filterResponse = phileasFilterService.filter(List.of(policy), context, hit.getId(), input, MimeType.TEXT_PLAIN);
 
-                    LOGGER.info("Filter response: {}", filterResponse.getFilteredText());
+                    final FilterResponse filterResponse = phileasFilterService.filter(policy, context, hit.getId(), input, MimeType.TEXT_PLAIN);
 
+                    final Map<String, Object> sourceMap = hit.getSourceAsMap();
+                    sourceMap.put(fieldName, filterResponse.getFilteredText());
+
+                    AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                        try {
+                            final Map<String, Object> map = new HashMap<>(sourceMap);
+                            hit.sourceRef(new BytesArray(objectMapper.writeValueAsBytes(map)));
+                            return null;
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
                 }
-
-                final SearchResponse searchResponse = (SearchResponse) response;
-
-                response = new PhinderSearchResponse(
-                        searchResponse.getInternalResponse(),
-                        searchResponse.getScrollId(),
-                        searchResponse.getTotalShards(),
-                        searchResponse.getSuccessfulShards(),
-                        searchResponse.getSkippedShards(),
-                        searchResponse.getTook().millis(),
-                        searchResponse.getShardFailures(),
-                        searchResponse.getClusters(),
-                        policy  // TODO: Include the results of the PII scan.
-                );
 
             }
 
