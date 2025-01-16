@@ -30,16 +30,28 @@ docker compose up
 To use the plugin, create an index and then index some documents:
 
 ```
-curl -s -X PUT "http://localhost:9200/sample_index" -H 'Content-Type: application/json' | jq
+curl -s -X PUT "http://localhost:9200/sample_index" -H 'Content-Type: application/json'
 ```
 
 ```
 curl -s -X POST "http://localhost:9200/sample_index/_doc" -H 'Content-Type: application/json' -d'
-    {
-    "name": "Another Example",
-    "price": 19.99,
-    "description": "My email is something@something.com ok!"
-    }' | jq
+{
+  "name": "Another Example",
+  "description": "My email is something@something.com ok!"
+}'
+
+curl -s -X POST "http://localhost:9200/sample_index/_doc" -H 'Content-Type: application/json' -d'
+{
+  "name": "Yet Another Example",
+  "description": "No email addresses in this one"
+}'
+
+curl -s -X POST "http://localhost:9200/sample_index/_doc" -H 'Content-Type: application/json' -d'
+{
+  "name": "A Third Example",
+  "description": "tom@tom.com"
+}'
+
 ```
 
 Next, do a search providing a filter policy and specifying which field you want to redact. (For more on policies, see Phileas' documentation on [Policies](https://philterd.github.io/phileas/filter_policies/filter_policies/).) In this example,
@@ -57,7 +69,7 @@ curl -s http://localhost:9200/sample_index/_search -H "Content-Type: application
      "query": {
        "match_all": {}
      }
-   }' | jq
+   }'
 ```
 
 In the response, you will see the email address in the indexed document has been redacted:
@@ -74,19 +86,36 @@ In the response, you will see the email address in the indexed document has been
   },
   "hits": {
     "total": {
-      "value": 1,
+      "value": 3,
       "relation": "eq"
     },
     "max_score": 1,
     "hits": [
       {
         "_index": "sample_index",
-        "_id": "kK0rcJQB8PH88cC0FmJH",
+        "_id": "3sZ8cJQBeC9RICk83_tV",
         "_score": 1,
         "_source": {
           "name": "Another Example",
-          "description": "My email is {{{REDACTED-email-address}}} ok!",
-          "price": 19.99
+          "description": "My email is {{{REDACTED-email-address}}} ok!"
+        }
+      },
+      {
+        "_index": "sample_index",
+        "_id": "38Z8cJQBeC9RICk83_t1",
+        "_score": 1,
+        "_source": {
+          "name": "Yet Another Example",
+          "description": "No email addresses in this one"
+        }
+      },
+      {
+        "_index": "sample_index",
+        "_id": "4MZ8cJQBeC9RICk83_uI",
+        "_score": 1,
+        "_source": {
+          "name": "A Third Example",
+          "description": "{{{REDACTED-email-address}}}"
         }
       }
     ]
