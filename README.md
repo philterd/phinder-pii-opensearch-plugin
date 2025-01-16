@@ -2,6 +2,8 @@
 
 This repository is a plugin for Amazon OpenSearch that redacts PII from search results. It uses the [phileas](https://github.com/philterd/phileas/) library for redaction.
 
+## Related Topics
+
 If you are here, you may also be interested in:
 * [Field-level security in OpenSearch](https://opensearch.org/docs/latest/security/access-control/field-level-security/)
 * [Field masking in OpenSearch](https://opensearch.org/docs/latest/security/access-control/field-masking/)
@@ -75,6 +77,8 @@ curl -s http://localhost:9200/sample_index/_search -H "Content-Type: application
      }
    }'
 ```
+
+The value of `field` can be a single field, or a comma-separated list of fields to redact.
 
 In the response, you will see the email address in the indexed document has been redacted:
 

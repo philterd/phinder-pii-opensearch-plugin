@@ -110,6 +110,7 @@ public class PhinderActionFilter implements ActionFilter {
                 final String policyJson = phinderParameters.getPolicy();
                 final String context = phinderParameters.getContext();
                 final String fieldName = phinderParameters.getFieldName();
+                final String[] fields = fieldName.split(",");
 
                 // LOGGER.info("policy = {}, context = {}, field = {}", policyJson, context, fieldName);
 
@@ -125,23 +126,34 @@ public class PhinderActionFilter implements ActionFilter {
 
                 for (final SearchHit hit : ((SearchResponse) response).getHits().getHits()) {
 
-                    // Look for PII by applying the policy to the selected field.
-                    final String input = hit.getSourceAsMap().get(fieldName).toString();
+                    for(final String field : fields) {
 
-                    final FilterResponse filterResponse = phileasFilterService.filter(policy, context, hit.getId(), input, MimeType.TEXT_PLAIN);
+                        if (hit.getSourceAsMap().containsKey(field)) {
 
-                    final Map<String, Object> sourceMap = hit.getSourceAsMap();
-                    sourceMap.put(fieldName, filterResponse.getFilteredText());
+                            // Look for PII by applying the policy to the selected field.
+                            final String input = hit.getSourceAsMap().get(field).toString();
 
-                    AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                        try {
-                            final Map<String, Object> map = new HashMap<>(sourceMap);
-                            hit.sourceRef(new BytesArray(objectMapper.writeValueAsBytes(map)));
-                            return null;
-                        } catch (JsonProcessingException e) {
-                            throw new RuntimeException(e);
+                            final FilterResponse filterResponse = phileasFilterService.filter(policy, context, hit.getId(), input, MimeType.TEXT_PLAIN);
+
+                            final Map<String, Object> sourceMap = hit.getSourceAsMap();
+                            sourceMap.put(field, filterResponse.getFilteredText());
+
+                            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                                try {
+                                    final Map<String, Object> map = new HashMap<>(sourceMap);
+                                    hit.sourceRef(new BytesArray(objectMapper.writeValueAsBytes(map)));
+                                    return null;
+                                } catch (JsonProcessingException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
+
+                        } else {
+                            LOGGER.warn("Search request wanted field {} to be redacted but field was not found.", field);
                         }
-                    });
+
+                    }
+
                 }
 
             }

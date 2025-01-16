@@ -18,6 +18,6 @@ curl -s -X POST "http://localhost:9200/sample_index/_doc" -H 'Content-Type: appl
 
 curl -s -X POST "http://localhost:9200/sample_index/_doc" -H 'Content-Type: application/json' -d'
 {
-  "name": "A Third Example",
+  "name": "email in this one is test@test.com",
   "description": "tom@tom.com"
 }' | jq
