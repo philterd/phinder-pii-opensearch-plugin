@@ -1,4 +1,4 @@
-# Phinder for OpenSearch
+# Phinder PII Plugin for OpenSearch
 
 This repository is a plugin for Amazon OpenSearch that redacts PII from search results. It uses the [phileas](https://github.com/philterd/phileas/) library for redaction.
 
@@ -19,7 +19,8 @@ curl -s -X POST "http://localhost:9200/sample_index/_doc" -H 'Content-Type: appl
     }' | jq
 ```
 
-Next, do a search providing a filter policy:
+Next, do a search providing a filter policy and specifying which field you want to redact. In this example,
+we are going to redact email addresses that appear in the `description` field:
 
 ```
 curl -s http://localhost:9200/sample_index/_search -H "Content-Type: application/json" -d'
