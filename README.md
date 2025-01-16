@@ -2,6 +2,8 @@
 
 This repository is a plugin for Amazon OpenSearch that redacts PII from search results. It uses the [phileas](https://github.com/philterd/phileas/) library for redaction.
 
+There is also a [version](https://github.com/philterd/phinder-pii-elasticsearch-plugin) available for Elasticsearch.
+
 ## Related Topics
 
 If you are here, you may also be interested in:
