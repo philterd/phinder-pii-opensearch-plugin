@@ -2,12 +2,27 @@
 
 This repository is a plugin for Amazon OpenSearch that redacts PII from search results. It uses the [phileas](https://github.com/philterd/phileas/) library for redaction.
 
-## Build
+## Build and Install
 
 To build the plugin:
 
 ```
 ./gradlew build
+```
+
+To install the plugin:
+
+```
+/usr/share/opensearch/bin/opensearch-plugin install --batch file:/path/to/phinder-1.0.0-SNAPSHOT.zip
+```
+
+## Using Docker
+
+To quickly run OpenSearch and the plugin for development or testing:
+
+```
+docker compose build
+docker compose up
 ```
 
 ## Usage
