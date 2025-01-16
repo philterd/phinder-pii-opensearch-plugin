@@ -10,7 +10,7 @@ version = "1.0.0-SNAPSHOT"
 opensearchplugin {
     name 'phinder'
     description 'Phinder'
-    classname "ai.philterd.PhinderPlugin"
+    classname "ai.philterd.phinder.PhinderPlugin"
     licenseFile rootProject.file('LICENSE.txt')
     noticeFile rootProject.file('NOTICE.txt')
 }
