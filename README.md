@@ -42,7 +42,7 @@ curl -s -X POST "http://localhost:9200/sample_index/_doc" -H 'Content-Type: appl
     }' | jq
 ```
 
-Next, do a search providing a filter policy and specifying which field you want to redact. In this example,
+Next, do a search providing a filter policy and specifying which field you want to redact. (For more on policies, see Phileas' documentation on [Policies](https://philterd.github.io/phileas/filter_policies/filter_policies/).) In this example,
 we are going to redact email addresses that appear in the `description` field:
 
 ```
