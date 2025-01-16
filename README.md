@@ -67,10 +67,10 @@ we are going to redact email addresses that appear in the `description` field:
 curl -s http://localhost:9200/sample_index/_search -H "Content-Type: application/json" -d'
    {
     "ext": {
-     "phinder": {
-        "field": "description",
-        "policy": "{\"identifiers\": {\"emailAddress\":{\"emailAddressFilterStrategies\":[{\"strategy\":\"REDACT\",\"redactionFormat\":\"{{{REDACTED-%t}}}\"}]}}}"
-      }
+       "phinder": {
+          "field": "description",
+          "policy": "{\"identifiers\": {\"emailAddress\":{\"emailAddressFilterStrategies\":[{\"strategy\":\"REDACT\",\"redactionFormat\":\"{{{REDACTED-%t}}}\"}]}}}"
+        }
      },
      "query": {
        "match_all": {}
@@ -78,7 +78,7 @@ curl -s http://localhost:9200/sample_index/_search -H "Content-Type: application
    }'
 ```
 
-The value of `field` can be a single field, or a comma-separated list of fields to redact.
+The value of `field` in the request can be a single field, or a comma-separated list of fields to redact.
 
 In the response, you will see the email address in the indexed document has been redacted:
 
