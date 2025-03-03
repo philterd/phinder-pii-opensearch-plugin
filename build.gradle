@@ -46,7 +46,7 @@ buildscript {
 
 dependencies {
     implementation("ai.philterd:phileas-core:2.10.0")
-    implementation("ai.philterd:phileas-model:2.10.0")
+    implementation("ai.philterd:phileas-model:2.11.0")
     implementation("ai.philterd:phileas-services-policies:2.10.0")
     implementation("ai.philterd:phileas-services-anonymization:2.10.0")
     implementation("ai.philterd:phileas-services-alerts:2.10.0")
