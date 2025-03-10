@@ -26,9 +26,13 @@ java {
     sourceCompatibility = JavaVersion.VERSION_21
 }
 
+ext {
+    phileasVersion = '2.11.0'
+}
+
 buildscript {
     ext {
-        opensearch_version = System.getProperty("opensearch.version", "2.18.0")
+        opensearch_version = System.getProperty("opensearch.version", "2.19.0")
     }
 
     repositories {
@@ -45,14 +49,14 @@ buildscript {
 }
 
 dependencies {
-    implementation("ai.philterd:phileas-core:2.10.0")
-    implementation("ai.philterd:phileas-model:2.11.0")
-    implementation("ai.philterd:phileas-services-policies:2.10.0")
-    implementation("ai.philterd:phileas-services-anonymization:2.11.0")
-    implementation("ai.philterd:phileas-services-alerts:2.11.0")
-    implementation("ai.philterd:phileas-processors-unstructured:2.10.0")
-    implementation("ai.philterd:phileas-services-disambiguation:2.11.0")
-    implementation("ai.philterd:phileas-services-split:2.10.0")
+    implementation("ai.philterd:phileas-core:$phileasVersion")
+    implementation("ai.philterd:phileas-model:$phileasVersion")
+    implementation("ai.philterd:phileas-services-policies:$phileasVersion")
+    implementation("ai.philterd:phileas-services-anonymization:$phileasVersion")
+    implementation("ai.philterd:phileas-services-alerts:$phileasVersion")
+    implementation("ai.philterd:phileas-processors-unstructured:$phileasVersion")
+    implementation("ai.philterd:phileas-services-disambiguation:$phileasVersion")
+    implementation("ai.philterd:phileas-services-split:$phileasVersion")
 
     implementation 'com.google.code.gson:gson:2.12.1'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
