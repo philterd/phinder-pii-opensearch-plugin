@@ -27,7 +27,7 @@ java {
 }
 
 ext {
-    phileasVersion = '2.11.0'
+    phileasVersion = '2.12.1'
 }
 
 buildscript {
