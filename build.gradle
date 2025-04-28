@@ -58,7 +58,7 @@ dependencies {
     implementation("ai.philterd:phileas-services-disambiguation:$phileasVersion")
     implementation("ai.philterd:phileas-services-split:$phileasVersion")
 
-    implementation 'com.google.code.gson:gson:2.13.0'
+    implementation 'com.google.code.gson:gson:2.13.1'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
     implementation 'org.json:json:20250107'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.3'
