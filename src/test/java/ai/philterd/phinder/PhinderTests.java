@@ -17,7 +17,7 @@ package ai.philterd.phinder;
 
 import org.opensearch.test.OpenSearchTestCase;
 
-public class SampleTests extends OpenSearchTestCase {
+public class PhinderTests extends OpenSearchTestCase {
 
     public void testSample() {
 

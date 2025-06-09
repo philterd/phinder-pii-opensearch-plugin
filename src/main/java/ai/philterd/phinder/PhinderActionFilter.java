@@ -20,7 +20,6 @@ import ai.philterd.phileas.model.policy.Policy;
 import ai.philterd.phileas.model.responses.FilterResponse;
 import ai.philterd.phileas.services.PhileasFilterService;
 import ai.philterd.phinder.ext.PhinderParameters;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,8 +34,6 @@ import org.opensearch.core.common.bytes.BytesArray;
 import org.opensearch.search.SearchHit;
 import org.opensearch.tasks.Task;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,14 +112,7 @@ public class PhinderActionFilter implements ActionFilter {
                 // LOGGER.info("policy = {}, context = {}, field = {}", policyJson, context, fieldName);
 
                 final ObjectMapper objectMapper = new ObjectMapper();
-
-                final Policy policy = AccessController.doPrivileged((PrivilegedAction<Policy>) () -> {
-                        try {
-                            return objectMapper.readValue(policyJson, Policy.class);
-                        } catch (JsonProcessingException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    });
+                final Policy policy = objectMapper.readValue(policyJson, Policy.class);
 
                 for (final SearchHit hit : ((SearchResponse) response).getHits().getHits()) {
 
@@ -138,15 +128,8 @@ public class PhinderActionFilter implements ActionFilter {
                             final Map<String, Object> sourceMap = hit.getSourceAsMap();
                             sourceMap.put(field, filterResponse.getFilteredText());
 
-                            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                                try {
-                                    final Map<String, Object> map = new HashMap<>(sourceMap);
-                                    hit.sourceRef(new BytesArray(objectMapper.writeValueAsBytes(map)));
-                                    return null;
-                                } catch (JsonProcessingException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
+                            final Map<String, Object> map = new HashMap<>(sourceMap);
+                            hit.sourceRef(new BytesArray(objectMapper.writeValueAsBytes(map)));
 
                         } else {
                             LOGGER.warn("Search request wanted field {} to be redacted but field was not found.", field);

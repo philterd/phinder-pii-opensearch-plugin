@@ -15,11 +15,12 @@
  */
 package ai.philterd.phinder;
 
+import ai.philterd.phileas.model.cache.InMemoryCache;
 import ai.philterd.phileas.model.configuration.PhileasConfiguration;
+import ai.philterd.phileas.model.services.CacheService;
 import ai.philterd.phileas.services.PhileasFilterService;
 import ai.philterd.phinder.ext.PhinderParametersExtBuilder;
 import org.opensearch.action.support.ActionFilter;
-import org.opensearch.client.Client;
 import org.opensearch.cluster.metadata.IndexNameExpressionResolver;
 import org.opensearch.cluster.service.ClusterService;
 import org.opensearch.core.common.io.stream.NamedWriteableRegistry;
@@ -32,6 +33,7 @@ import org.opensearch.plugins.SearchPlugin;
 import org.opensearch.repositories.RepositoriesService;
 import org.opensearch.script.ScriptService;
 import org.opensearch.threadpool.ThreadPool;
+import org.opensearch.transport.client.Client;
 import org.opensearch.watcher.ResourceWatcherService;
 
 import java.util.ArrayList;
@@ -72,7 +74,8 @@ public class PhinderPlugin extends Plugin implements ActionPlugin, SearchPlugin 
 
             final Properties properties = new Properties();
             final PhileasConfiguration phileasConfiguration = new PhileasConfiguration(properties);
-            final PhileasFilterService phileasFilterService = new PhileasFilterService(phileasConfiguration);
+            final CacheService cacheService = new InMemoryCache();
+            final PhileasFilterService phileasFilterService = new PhileasFilterService(phileasConfiguration, cacheService);
 
             return singletonList(new PhinderActionFilter(phileasFilterService));
 
