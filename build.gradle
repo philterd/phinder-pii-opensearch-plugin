@@ -28,7 +28,6 @@ java {
 
 ext {
     phileasVersion = '2.12.3'
-    opensearch_version = System.getProperty("opensearch.version", "3.0.0")
 }
 
 buildscript {
@@ -60,12 +59,12 @@ dependencies {
     implementation("ai.philterd:phileas-services-disambiguation:$phileasVersion")
     implementation("ai.philterd:phileas-services-split:$phileasVersion")
 
-    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.google.code.gson:gson:2.13.1'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
-    implementation 'org.json:json:20250107'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.18.2'
-    implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'org.json:json:20250517'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.19.0'
+    implementation 'org.apache.commons:commons-collections4:4.5.0'
 
     testImplementation("org.opensearch:opensearch-agent-bootstrap:${opensearch_version}")
     yamlRestTestImplementation("org.opensearch:opensearch-agent-bootstrap:${opensearch_version}")
