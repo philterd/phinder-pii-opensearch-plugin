@@ -62,8 +62,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'org.apache.commons:commons-lang3:3.20.0'
     implementation 'org.json:json:20250517'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.1'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.20.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.4'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.19.4'
     implementation 'org.apache.commons:commons-collections4:4.5.0'
 
     testImplementation("org.opensearch:opensearch-agent-bootstrap:${opensearch_version}")
@@ -78,6 +78,42 @@ repositories {
     maven { url "https://plugins.gradle.org/m2/" }
     maven { url "https://artifacts.philterd.ai/releases" }
     maven { url "https://artifacts.philterd.ai/snapshots" }
+}
+
+publishing {
+    publications {
+        pluginZip(MavenPublication) { publication ->
+            artifact bundlePlugin
+            pom {
+                name = "phinder-pii-opensearch-plugin"
+                description = "An OpenSearch plugin to redact PII from search results"
+                groupId = "ai.philterd"
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'philterd'
+                        name = 'jzonthemtn'
+                        email = 'jeff.zemerick@philterd.ai'
+                        organization = 'Philterd, LLC'
+                        organizationUrl = 'https://www.philterd.ai'
+                        url = 'https://www.philterd.ai'
+                    }
+                }
+            }
+        }
+        all {
+            pom {
+                name = "phinder-pii-opensearch-plugin"
+                description = "An OpenSearch plugin to redact PII from search results"
+            }
+        }
+    }
 }
 
 test {
