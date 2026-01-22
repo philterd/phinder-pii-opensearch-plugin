@@ -33,7 +33,7 @@ ext {
 buildscript {
 
     ext {
-        opensearch_version = System.getProperty("opensearch.version", "3.2.0")
+        opensearch_version = System.getProperty("opensearch.version", "3.4.0")
     }
 
     repositories {
@@ -62,7 +62,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'org.apache.commons:commons-lang3:3.20.0'
     implementation 'org.json:json:20251224'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.21'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.0'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.21'
     implementation 'org.apache.commons:commons-collections4:4.5.0'
 
